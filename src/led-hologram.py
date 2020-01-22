@@ -4,7 +4,7 @@
 # (C) 2020 juergen@fabmail.org
 #
 # This is an upload tool for Holographich 3D Advertising machines with 224 LEDs.
-# E.g. from 
+# E.g. from
 # - https://hologramdisplay3d.com/the-hologram-display-led-fan/the-hologram-display-led-fan-377.html
 # - https://www.aliexpress.com/item/33026727586.html
 #
@@ -12,12 +12,13 @@
 # The propeller has a 16GB SDcard, where the animations are stored in a special 'bin' format.
 #
 # v0.1, 2020-01-21, jw  initial draught. Simple pause, play, and status commands done.
+# v0.2, 2020-01-22, jw  delete command added.
 #
 
 from __future__ import print_function
 import sys, os, re, socket, argparse
 
-__version = "0.1"
+__version = "0.2"
 
 default_ip_addr = '192.168.4.1'
 default_tcp_port = '5233'
@@ -27,7 +28,7 @@ parser = argparse.ArgumentParser(formatter_class=argparse.RawDescriptionHelpForm
 Commands:
 
   pause
-    Stop the animation at the current frame. A constant image will be shown until a 
+    Stop the animation at the current frame. A constant image will be shown until a
     'play' command is sent.
 
   play
@@ -35,6 +36,10 @@ Commands:
 
   status
     Show list of uploaded files, marking the one that is currently playing.
+
+  delete NN
+    Remove a file from the list.
+    NN should be an index number from the first column of the status output.
 
 """)
 
@@ -49,7 +54,7 @@ args = parser.parse_args()
 def try_recv(s, timeout=0.2, verbose=False):
   s.settimeout(timeout)       # seconds
   buf = ''
-  try: 
+  try:
     buf = s.recv(1024)
     if buf and verbose:
       print("received %s" % buf)
@@ -103,15 +108,23 @@ s.connect((args.address, int(args.port)))
 try_recv(s, 0.1, True)
 
 if args.cmd[0] == 'pause':
-  n = s.send(b"c0eeb7c9baa3020000000014cc"+b"34"+b"lfhbfb5d2a2")
+  n = s.send(b"c0eeb7c9baa3020000000014cc" + b"34" + b"lfhbfb5d2a2")
   print("%d bytes sent." % n)
-  
-elif args.cmd[0] == 'status':
-  n = s.send(b"c0eeb7c9baa3020000000014cc"+b"38"+b"lfhbfb5d2a2")
-  fmt_status(try_recv(s, 2.0, False))
 
 elif args.cmd[0] == 'play':
-  n = s.send(b"c0eeb7c9baa3020000000014cc"+b"35"+b"lfhbfb5d2a2")
+  n = s.send(b"c0eeb7c9baa3020000000014cc" + b"35" + b"lfhbfb5d2a2")
+  print("%d bytes sent." % n)
+
+elif args.cmd[0] == 'status':
+  n = s.send(b"c0eeb7c9baa3020000000014cc" + b"38" + b"lfhbfb5d2a2")
+  fmt_status(try_recv(s, 2.0, False))
+
+elif args.cmd[0] == 'del' or args.cmd[0] == 'delete':
+  idx = int(args.cmd[1])
+  if idx <= 0 or idx > 99:
+    print("ERROR: delete INDEX must be > 1 and < 100. (%d seen)" % idx)
+    sys.exit(1)
+  n = s.send(b"c0eeb7c9baa3020000000014cc" + b"39" + b"lfj" + bytes("%02d" % idx, "UTF-8") + b"bfb5d2a2")
   print("%d bytes sent." % n)
 
 else:
@@ -120,5 +133,6 @@ else:
 try_recv(s, 0.5, True)
 
 
-# magic seen:
+# magic seen from port 5499:
 # d3e0c9ba02012dd80AfJ0000bfb5d2a2
+# hmm, that seems to be unused.
