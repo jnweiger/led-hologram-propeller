@@ -11,20 +11,30 @@
 # The device comes with a WiFi interface. This allows upload and change of the animation without stopping the propeller.
 # The propeller has a 16GB SDcard, where the animations are stored in a special 'bin' format.
 #
+# If the upload pauses for more than 18 seconds, the device closes the parital file and plays it. Nice.
+#
 # v0.1, 2020-01-21, jw  initial draught. Simple pause, play, and status commands done.
 # v0.2, 2020-01-22, jw  delete command added.
-# v0.3, 2020-01-23, jw  started upload command.
+# v0.3, 2020-01-23, jw  upload command added.
 #
 
 from __future__ import print_function
-import sys, os, math, socket, argparse
+import sys, os, math, socket, time, argparse
 
 
 __version = "0.3"
 
-default_ip_addr = '192.168.4.1'
-default_tcp_port = '5233'
-default_tcp_upload_port = '5499'
+default_ip_addr    = '192.168.4.1'
+default_tcp_port   = '5233'
+default_tcp_upport = '5499'
+default_updelay    = '0.03'
+
+PACKET_SIZE      = 1460
+PACKET_HEADER    = b'd3e0c9ba02014dd8'
+PACKET_TYPE_NAME = b'0AgQ'
+PACKET_TYPE_DATA = b'1GnH'
+PACKET_TYPE_END  = b'1AfF'
+PACKET_TRAILER   = b'bfb5d2a2'
 
 parser = argparse.ArgumentParser(formatter_class=argparse.RawDescriptionHelpFormatter, description='Control a 224 LED holographic propeller display.\nVersion %s from https://github.com/jnweiger/led-hologram-propeller\n -- see there for more examples and for updates.' % __version, epilog="""
 Commands:
@@ -50,7 +60,8 @@ Commands:
 
 parser.add_argument('-a', '--address', default=default_ip_addr, help="IP-Addess of the device. Default: %s" % default_ip_addr)
 parser.add_argument('-p', '--port', default=default_tcp_port, help="TCP port to connect with the device. Default: %s" % default_tcp_port)
-parser.add_argument('-M', '--upload-port', default=default_tcp_upload_port, help="TCP port for file upload. Default: %s" % default_tcp_upload_port)
+parser.add_argument('-u', '--upload-port', default=default_tcp_upport, help="TCP port for file upload. Default: %s" % default_tcp_upport)
+parser.add_argument('-d', '--delay', default=default_updelay, help="Upload delay between writes in seconds. Default %s" % default_updelay)
 parser.add_argument('cmd', metavar='COMMAND', nargs='+', help="Command word.")
 parser.add_argument('--command-help', action='version', help=argparse.SUPPRESS, version="--")
 args = parser.parse_args()
@@ -65,6 +76,7 @@ def try_recv(s, timeout=0.2, verbose=False):
       print("received %s" % buf)
   except socket.timeout:
     pass
+  s.settimeout(None)               # blocking
   return buf
 
 
@@ -107,13 +119,14 @@ def fmt_status(msg):
       print("   %2s| %s" % (i, li[i]))
 
 
-def upload_bin_file(address, port, file):
-  print("upload_bin_file('%s', %d, '%s')" % (address, port, file))
-  #u = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-  #u.settimeout(0.1)       # seconds
-  #u.connect((address, int(port)))
-  #try_recv(u, 0.1, False)
-  #u.close()
+def upload_bin_file(address, port, file, delay=float(args.delay)):
+  print("upload_bin_file('%s', %d, '%s', %f)" % (address, port, file, delay))
+
+  u = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+  u.settimeout(3)               # seconds
+  u.connect((address, int(port)))
+  try_recv(u, 0.1, False)
+
   fname = file.split('/')[-1]
   fname_b = bytes(fname, 'UTF-8')
   if fname[-4:] != '.bin':
@@ -123,30 +136,61 @@ def upload_bin_file(address, port, file):
     print("upload_file: ERROR: filename '%s' is %d bytes long. Maximum: 99" %(fname, len(fname_b)))
     sys.exit(1)
 
-  PACKET_SIZE=1460
-  PACKET_HEADER="d3e0c9ba02014dd81GnH"
-  PACKET_TRAILER="bfb5d2a2"
-
   fsize = os.stat(file).st_size
-  chunksize = PACKET_SIZE - len(PACKET_HEADER) - len(PACKET_TRAILER)
+  chunksize = PACKET_SIZE - len(PACKET_HEADER) - len(PACKET_TYPE_DATA) - len(PACKET_TRAILER)
   npackets = math.ceil(float(fsize)/chunksize)
   padsize = (npackets * chunksize) - fsize
   print("fsize=%d, chunksize=%d, npackets=%d, padsize=%d" % (fsize, chunksize, npackets, padsize))
 
   # d3e0c9ba02014dd80AgQ.F.(02_spinning_coin.binbfb5d2a2
   # b'd3e0c9ba02014dd80AgQ\x00F\x13(02_spinning_coin.binbfb5d2a2'
-  msg = (b"d3e0c9ba0%d14dd80AgQ" % len(fname_b)) + bytes([0x00, 0x46, 0x13, 0x28]) + fname_b + b"bfb5d2a2"
-  print(msg)
-  #n = s.send(msg)
+  ll = fsize + padsize          # fools! Why do you include the padding here?
+  # fools! Why is the length of the name not here?
+  msg = PACKET_HEADER + PACKET_TYPE_NAME + bytes([(ll>>24)&0xff, (ll>>16)&0xff, (ll>>8)&0xff, ll&0xff]) + fname_b + PACKET_TRAILER
+  # print(msg)
+  n = u.send(msg)
+  try_recv(u, 0.1, True)
 
-  unfinished.
+  fd = open(file, 'rb')
+  for pkt in range(npackets):
+    buf = fd.read(chunksize)
+    blen = len(buf)
+    if blen < chunksize:
+      print("last packet=%d, padding needed=%d" % (pkt+1, chunksize-blen))
+      if pkt+1 != npackets:
+        print("ERROR: not the last packet, expected %d." % npackets)
+        sys.exit(1)
+      if chunksize-blen != padsize:
+        print("ERROR: size mismatch, expected padding %d." % padsize)
+        sys.exit(1)
+      buf += b'0' * padsize       # fools! Don't you know the difference between "0" and "\0" ?
+    msg = PACKET_HEADER + PACKET_TYPE_DATA + buf + PACKET_TRAILER
+    print(" %6.1f%%\r" % (100. * (pkt+1) / npackets), end='')
+    n = u.send(msg)
+    time.sleep(delay)            # 0.02 is not enough. we see spikes.
+    #u.settimeout(0.1)
+    #if True:
+    #  try:
+    #    r = u.recv(1024)
+    #  except:
+    #    pass
+    #u.settimeout(None)
+
+  try_recv(u, 0.2, True)
+  msg = PACKET_HEADER + PACKET_TYPE_END + PACKET_TRAILER
+  # print(msg)
+  n = u.send(msg)
+  try_recv(u, 0.2, True)
+
+  u.shutdown(socket.SHUT_RDWR)
+  u.close()
 
 
 
-#s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-#s.settimeout(3.0)       # seconds
-#s.connect((args.address, int(args.port)))
-#try_recv(s, 0.1, True)
+s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+s.settimeout(3.0)       # seconds
+s.connect((args.address, int(args.port)))
+try_recv(s, 0.1, True)
 
 if args.cmd[0] == 'pause':
   n = s.send(b"c0eeb7c9baa3020000000014cc" + b"34" + b"lfhbfb5d2a2")
@@ -175,14 +219,17 @@ elif args.cmd[0] == 'upload':
   if len(args.cmd) < 2:
     print("ERROR: upload needs an binfile parameter.")
     sys.exit(1)
+  s.shutdown(socket.SHUT_RDWR)
   upload_bin_file(args.address, int(args.upload_port), args.cmd[1])
 
 else:
   print("\nUnknown command '%s' -- try %s --help" % (args.cmd[0], sys.argv[0]))
 
-#try_recv(s, 0.5, True)
+try_recv(s, 0.5, True)
+s.close()
 
 
 # magic seen from port 5499:
 # d3e0c9ba02012dd80AfJ0000bfb5d2a2
-# hmm, that seems to be unused.
+# hmm, that seems to be unused. But sometimes we get
+# d3e0c9ba02012dd80AfJffffbfb5d2a2
