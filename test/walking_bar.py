@@ -33,10 +33,10 @@ for frame in range(160):
   im = Image.new("RGB", (w, h))
   pix = im.load()
   for y in range(h):
-    putdot(pix,w/2-1+2*frame, y, color=(0,0,255))
+    putdot(pix,w/2-1+2*frame, y, color=(255,255,255))
   im.save("bar/frame_%03d.png" % frame)
   frames.append(im)
 
 
-frames[0].save('walking_bar_blue.gif', format='GIF', append_images=frames[1:], save_all=True, duration=int(1000./15), loop=0)
+frames[0].save('walking_bar.gif', format='GIF', append_images=frames[1:], save_all=True, duration=int(1000./15), loop=0)
 

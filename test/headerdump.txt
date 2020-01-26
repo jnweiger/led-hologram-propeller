@@ -1,0 +1,22 @@
+bin/bw.bin			00000000: 0000 003c 18 36 7802 bfe4 ea7b  ...<.6x....{
+bin/flicker_l_r.bin		00000000: 0000 003c 18 aa d785 969a 8d19  ...<........
+bin/flicker_quad_cw.bin		00000000: 0000 003c 18 02 3c23 e845 a179  ...<..<#.E.y
+bin/flicker_u_d.bin		00000000: 0000 003c 18 0d 470b ecf1 1c13  ...<..G.....
+bin/frame_000.bin		00000000: 0000 003c 18 06 11c0 82cc 729a  ...<......r.
+bin/frame_001.bin		00000000: 0000 003c 18 11 1ca9 06f8 ec34  ...<.......4
+bin/frame_002.bin		00000000: 0000 003c 18 6c 81e7 0a86 0b6b  ...<.l.....k
+bin/frame_003.bin		00000000: 0000 003c 18 94 c996 cce7 671f  ...<......g.
+bin/line_radar.bin		00000000: 0000 003c 18 cb e8e9 6f57 bf54  ...<....oW.T
+bin/vbar_001.bin		00000000: 0000 003c 18 31 d1ae b9e9 896d  ...<.1.....m
+bin/vbar_002.bin		00000000: 0000 003c 18 43 fccf 031d 4c38  ...<.C....L8
+bin/walking_bar.bin		00000000: 0000 003c 18 1b a5ca 8c73 b1f1  ...<.....s..
+bin/walking_bar_blue.bin	00000000: 0000 003c 18 96 2cc3 9c85 c076  ...<..,....v
+bin/walking_bar_green.bin	00000000: 0000 003c 18 e2 b342 7e91 494f  ...<...B~.IO
+bin/walking_bar_red.bin		00000000: 0000 003c 18 36 44c1 3635 0c8e  ...<.6D.65..
+00_green_earth.bin		00000000: 0000 0001 18 38 e55d 87f0 7287  .....8.]..r.
+02_spinning_coin.bin		00000000: 0000 0001 18 7b c1bc 6e86 d30f  .....{..n...
+04_bouncing_fraph.bin		00000000: 0000 0001 18 6c 65ea 1608 1e0e  .....le.....
+05_spinning_heart.bin		00000000: 0000 0001 18 ac 1ddb 3e8a a417  ........>...
+rotating_cube.bin		00000000: 0000 0001 18 3b cad2 3117 ec79  .....;..1..y
+vbar_009.bin			00000000: 0000 003c 18 15 d847 b3df faae  ...<...G....
+
