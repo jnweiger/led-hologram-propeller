@@ -20,6 +20,7 @@ for pad in range(2,20):
   draw.ellipse([(0+4*pad-10,0+4*pad-10), (w-4*pad+10,h-4*pad+10)], fill=col)
   draw.ellipse([(0+4*pad+10,0+4*pad+10), (w-4*pad-10,h-4*pad-10)], fill=(0,0,0))
   draw.ellipse([(0+4*pad+90,0+4*pad+90), (w-4*pad-90,h-4*pad-90)], fill=(255,0,0))
+  draw.ellipse([(w/2-40, h/2-40), (w/2+40,h/2+40)], fill=(255,255,255))
   frames.append(im)
 
 for pad in range(20,2,-1):
@@ -27,6 +28,7 @@ for pad in range(20,2,-1):
   draw = ImageDraw.Draw(im)
   draw.ellipse([(0+4*pad-10,0+4*pad-10), (w-4*pad+10,h-4*pad+10)], fill=col)
   draw.ellipse([(0+4*pad+10,0+4*pad+10), (w-4*pad-10,h-4*pad-10)], fill=(0,0,0))
+  draw.ellipse([(w/2-20, h/2-20), (w/2+20,h/2+20)], fill=(255,255,255))
   frames.append(im)
 
 frames[0].save('gif/circles.gif', format='GIF', append_images=frames[1:], save_all=True, duration=int(1000./15), loop=0)
