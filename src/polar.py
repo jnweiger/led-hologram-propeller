@@ -5,8 +5,8 @@
 import math
 
 diam = 36
-c_x = 18
-c_y = 18
+c_x = (diam-1.)/2
+c_y = (diam-1.)/2
 n_rays = 240
 leds = 22
 
@@ -27,7 +27,7 @@ def polar2cart(cx, cy, r, phi):
 
 for n in range(n_rays):
   phi = math.radians(360.*n/n_rays)
-  sca = float(diam)/float(leds-1)
+  sca = float(diam-1)/float(leds-1)
   print("n=%d\t" % n, end='')
   for led in range(leds//2):
     print("(%.2f, %.2f) " % polar2cart(c_x, c_y, (0.5+led) * sca, phi), end="")
