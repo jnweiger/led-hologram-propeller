@@ -3,7 +3,7 @@
 # polar.py -- fun with polar coordinates.
 
 from PIL import Image
-import math
+import math, random
 
 debug = False    # use small test values
 verbose = False  # print everthing...
@@ -108,7 +108,7 @@ for n in range(n_rays):
 #   im_o.save('xxx.png', format='PNG')
 
 out = []
-for n in range[n_rays]:
+for n in range(n_rays):
   out.append([0] * (3*leds//16))
 
 for column in range(len(po)):
@@ -117,10 +117,14 @@ for column in range(len(po)):
   err = 0
   for n in range(n_rays):
     # TODO: add error diffusion here
-    if po[column][n] > 127:
+    if po[column][n] > 87:
       out[n][byte] |= bitval;
 
 o = open("framedata.bin", "wb")
+header = [ 0x00, 0x00, 0x00, 0x3c, 0x18 ]
+for i in range(5, 0x1000):
+  header.append(random.randint(0,255))
+o.write(bytes(header))
 for row in out:
   o.write(bytes(row))
 o.close()
