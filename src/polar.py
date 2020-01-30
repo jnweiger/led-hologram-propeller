@@ -72,13 +72,18 @@ def polar2cart(cx, cy, r, phi):
   y = cy + r * math.sin(phi)
   return (x, y)
 
+
 imgfile = 'test/freecad/four_primitives/t0001.png'
 
 if not debug:
   im = Image.open(imgfile).convert('RGB')       # make sure it is RGB
   pix = im.load()
-  im_o = Image.new("RGB", (leds//2, n_rays))
-  pix_o = im_o.load()
+  # im_o = Image.new("RGB", (leds//2, n_rays))
+  # pix_o = im_o.load()
+
+po = []
+for i in range(leds//2*3):
+  po.append([])
 
 for n in range(n_rays):
   phi = math.radians(360.*n/n_rays)
@@ -89,11 +94,34 @@ for n in range(n_rays):
     (x,y) = polar2cart(c_x, c_y, (0.5+led) * sca, phi)
     if verbose:
       print("(%.2f, %.2f) " % (x,y), end="")
-    if not debug:
-      pix_o[led,n] = quad_avg(pix, x, y)
+    # if not debug:
+    #   pix_o[led,n] = quad_avg(pix, x, y)
+    rgb = quad_avg(pix, x, y)
+    po[3*led+0].append(rgb[0])
+    po[3*led+1].append(rgb[1])
+    po[3*led+2].append(rgb[2])
 
   if verbose:
     print("")
 
-if not debug:
-  im_o.save('xxx.png', format='PNG')
+# if not debug:
+#   im_o.save('xxx.png', format='PNG')
+
+out = []
+for n in range[n_rays]:
+  out.append([0] * (3*leds//16))
+
+for column in range(len(po)):
+  byte = column // 8
+  bitval = 1 << (column % 8)
+  err = 0
+  for n in range(n_rays):
+    # TODO: add error diffusion here
+    if po[column][n] > 127:
+      out[n][byte] |= bitval;
+
+o = open("framedata.bin", "wb")
+for row in out:
+  o.write(bytes(row))
+o.close()
+
