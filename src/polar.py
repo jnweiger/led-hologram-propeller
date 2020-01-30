@@ -112,20 +112,27 @@ for n in range(n_rays):
   out.append([0] * (3*leds//16))
 
 for column in range(len(po)):
-  byte = column // 8
-  bitval = 1 << (column % 8)
+  byte   =       (len(po)-1-column) // 8
+  bitval = 1 << ((len(po)-1-column) % 8)
   err = 0
   for n in range(n_rays):
     # TODO: add error diffusion here
-    if po[column][n] > 87:
+    val = po[column][n]
+    if val > 87:
       out[n][byte] |= bitval;
 
 o = open("framedata.bin", "wb")
 header = [ 0x00, 0x00, 0x00, 0x3c, 0x18 ]
+padding = bytes([0] * 1260)
+
 for i in range(5, 0x1000):
   header.append(random.randint(0,255))
 o.write(bytes(header))
+
 for row in out:
   o.write(bytes(row))
+o.write(padding)
+
+# TODO: next frames follow here...
 o.close()
 
