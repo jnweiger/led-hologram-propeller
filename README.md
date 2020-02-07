@@ -14,3 +14,35 @@ If needed send 2,3,4 rays for each scan line and average them.
 Challenge: find a way to apply a convolution kernel to an (x,y) kernel and get the value.
 
 check out the implementation of ImageOps.expand and im.filter()
+
+
+The outermost ring is 0, counting inwards:
+
+Byte Bit     Ring Color
+----+------------+-------
+   0 7		0 Blue
+   0 6		0 Green
+   0 5		0 Red
+   0 4		1 Bue
+   0 3		1 Green
+   0 2		1 Red
+   0 1		2 Blue
+   0 0		2 Green
+
+   0 7		2 Red
+   0 6		3 Blue
+   0 5		3 Green
+   0 4		3 Red
+   0 3		4 Blue
+   0 2		4 Green
+   0 1		4 Red
+   0 0		5 Blue
+
+   0 7		5 Green
+   0 6		5 Red
+   0 5		6 Blue
+   0 4		6 Green
+   0 3		6 Red
+   0 2		7 Blue
+   0 1		7 Green
+   0 0		7 Red

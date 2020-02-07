@@ -1,8 +1,11 @@
 #! /usr/bin/python3
 #
 # encode_polar_bin.py -- fun with polar coordinates.
+# 
+# rgb_bit_columns() implements the pattern described in the README.
+# It seems correct!
 
-from PIL import Image
+from PIL import Image, ImageDraw
 import sys, math, random
 
 debug = False    # use small test values
@@ -65,18 +68,23 @@ def polar2cart(cx, cy, r, phi):
   return (x, y)
 
 
-def rgb_byte_column(x):
-  # 0 1 2 3 4 5 6 7 24 25 26 27 28 29 30 31 48 48 50 51
-  return 8*3*(x//8)+(x%8)
+def rgb_bit_columns(x, width):
+  #            0   1   2   3   4   5   6   7
+  #           ---+---+---+---+---+---+---+---
+  zigzag_r = [ 16, 19, 22, 9,  12, 15, 2,  5 ]
+  zigzag_g = [ 17, 20, 23, 10, 13, 0,  3,  6 ]
+  zigzag_b = [ 18, 21, 8,  11, 14, 1,  4,  7 ]
+  o = width - 24 - x // 8 * 8 * 3
+  m = x % 8
+  return (o + zigzag_r[m], o + zigzag_g[m], o + zigzag_b[m])
 
 
-def encode_polar_bin(imgfile):
-  im = Image.open(imgfile).convert('RGB')       # make sure it is RGB
+def encode_polar_bin(im):
   pix = im.load()
-
   # prepare a frame polar distortion
+  po_width = leds // 2 * 3
   po = []
-  for i in range(leds//2*3):
+  for i in range(po_width):
     po.append([])
 
   for n in range(n_rays):
@@ -89,15 +97,11 @@ def encode_polar_bin(imgfile):
       if verbose:
         print("(%.2f, %.2f) " % (x,y), end="")
       rgb = quad_avg(pix, x, y)
-      ### bit interleaved? Nah, does not look right...
-      #po[3*led+0].append(rgb[0])
-      #po[3*led+1].append(rgb[1])
-      #po[3*led+2].append(rgb[2])
-      ### byte interleaved
-      cc = rgb_byte_column(led)
-      po[cc+0 ].append(rgb[0])
-      po[cc+8 ].append(rgb[1])
-      po[cc+16].append(rgb[2])
+      ### bit interleaved in 24 bits for 8 rings.
+      (cr,cg,cb) = rgb_bit_columns(led, po_width)
+      po[cr].append(rgb[0])
+      po[cg].append(rgb[1])
+      po[cb].append(rgb[2])
 
     if verbose:
       print("")
@@ -105,17 +109,39 @@ def encode_polar_bin(imgfile):
   ## prepare a frame for the binary format
   out = []
   for n in range(n_rays):
-    out.append([0] * (3*leds//16))
+    out.append([0] * (3*leds//16))      # number of bytes = po_width / 8 = 42
 
   for column in range(len(po)):
-    byte   =       (len(po)-1-column) // 8
-    bitval = 1 << ((len(po)-1-column) % 8)
+    byte   =       column // 8
+    bitval = 1 << (column % 8)
     err = 0
     for n in range(n_rays):
       # TODO: add error diffusion here
       val = po[column][n]
       if val > 87:
         out[n][byte] |= bitval;
+  return out
+
+
+def polar_bin_test(x=-1):
+  ## prepare a frame for the binary format
+  bytes_per_column = 3*leds//16
+  out = []
+  for n in range(n_rays):
+    out.append([0] * bytes_per_column)
+  out[0] = [255] * bytes_per_column
+
+  for n in range(n_rays-20):
+    if (n//20) < 128:
+      out[n][24] = n//20
+      out[n][26] = 128 + n//20
+    if (n//100) < 8:
+      out[n][10] = 1 << (n//100)
+      out[n][0] = 1 << (n//100)
+      out[n][1] = 1 << (n//100)
+      out[n][2] = 1 << (n//100)
+      out[n][3] = 1 << (n//100)
+      out[n][4] = 1 << (n//100)
   return out
 
 
@@ -128,10 +154,13 @@ for i in range(5, 0x1000):
   header.append(random.randint(0,255))
 o.write(bytes(header))
 
+# for i in range(20):
+#   data = polar_bin_test(i)
 
-for img in sys.argv[1:]:
-  print("encoding %s ..." % img)
-  data = encode_polar_bin(img)
+for imgfile in sys.argv[1:]:
+  print("encoding %s ..." % imgfile)
+  im = Image.open(imgfile).convert('RGB')       # make sure it is RGB
+  data = encode_polar_bin(im)
 
   for row in data:
     o.write(bytes(row))
