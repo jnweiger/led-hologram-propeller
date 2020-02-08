@@ -11,12 +11,10 @@ import sys, math, random
 debug = False    # use small test values
 verbose = False  # print everthing...
 
-diam = 360            # input png image width
-c_x = (diam-1.)/2
-c_y = (diam-1.)/2
+diam_def = 360        # input png image width
 n_rays = 2700         # 113400 / 42
-padsize = 1288          # number of \0 bytes between frames.
-leds = 224
+padsize = 1288        # number of \0 bytes between frames.
+leds = 224            # That is what the device says, (I did not count them :-))
 
 
 def quad_avg(pix_acc, x, y):
@@ -79,7 +77,9 @@ def rgb_bit_columns(x, width):
   return (o + zigzag_r[m], o + zigzag_g[m], o + zigzag_b[m])
 
 
-def encode_polar_bin(im):
+def encode_polar_bin(im, diam=diam_def, c_x=None, c_y=None):
+  if c_x == None: c_x = (diam-1.)/2
+  if c_y == None: c_y = (diam-1.)/2
   pix = im.load()
   # prepare a frame polar distortion
   po_width = leds // 2 * 3
@@ -88,7 +88,7 @@ def encode_polar_bin(im):
     po.append([])
 
   for n in range(n_rays):
-    phi = math.radians(360.*n/n_rays)
+    phi = math.radians(360.*(n_rays-n)/n_rays)
     sca = float(diam-1)/float(leds-1)
     if verbose:
       print("n=%d\t" % n, end='')
@@ -118,7 +118,7 @@ def encode_polar_bin(im):
     for n in range(n_rays):
       # TODO: add error diffusion here
       val = po[column][n]
-      if val > 87:
+      if val > 67:
         out[n][byte] |= bitval;
   return out
 
@@ -160,7 +160,7 @@ o.write(bytes(header))
 for imgfile in sys.argv[1:]:
   print("encoding %s ..." % imgfile)
   im = Image.open(imgfile).convert('RGB')       # make sure it is RGB
-  data = encode_polar_bin(im)
+  data = encode_polar_bin(im, min(im.height, im.width))
 
   for row in data:
     o.write(bytes(row))
