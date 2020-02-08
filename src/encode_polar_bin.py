@@ -116,10 +116,14 @@ def encode_polar_bin(im, diam=diam_def, c_x=None, c_y=None):
     bitval = 1 << (column % 8)
     err = 0
     for n in range(n_rays):
-      # TODO: add error diffusion here
-      val = po[column][n]
-      if val > 67:
+      ## Error diffusion to the rescue! It is only a 1-bit DAC, aaaaargh.
+      ## FIXME: diffusing each color channel independantly creates horrible noise.
+      val = po[column][n] + err
+      if val > 127:
         out[n][byte] |= bitval;
+        err = val - 255
+      else:
+        err = val
   return out
 
 
