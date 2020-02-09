@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="210mm"
+   height="297mm"
+   viewBox="0 0 210 297"
+   version="1.1"
+   id="svg8"
+   inkscape:version="0.92.4 (unknown)"
+   sodipodi:docname="fablab_text.svg">
+  <defs
+     id="defs2" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="7.1825104"
+     inkscape:cx="39.351923"
+     inkscape:cy="1077.3382"
+     inkscape:document-units="mm"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     inkscape:window-width="1920"
+     inkscape:window-height="1015"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1">
+    <inkscape:grid
+       type="xygrid"
+       id="grid815" />
+  </sodipodi:namedview>
+  <metadata
+     id="metadata5">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Ebene 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <rect
+       style="fill:none;stroke:#00ff00;stroke-width:0.1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect817"
+       width="20"
+       height="20"
+       x="0"
+       y="2" />
+    <circle
+       r="10"
+       cy="12"
+       cx="10"
+       id="path847"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7.05555534px;line-height:1.25;font-family:aeromatic;-inkscape-font-specification:aeromatic;letter-spacing:0px;word-spacing:0px;fill:none;fill-opacity:1;stroke:#00ff00;stroke-width:0.1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+    <g
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7.05555534px;line-height:1.25;font-family:aeromatic;-inkscape-font-specification:aeromatic;letter-spacing:0px;word-spacing:0px;fill:none;fill-opacity:1;stroke:#ff0000;stroke-width:0.1054071;stroke-miterlimit:4;stroke-dasharray:none"
+       transform="matrix(0.94870264,0,0,0.94870264,0.49952799,0.48073575)"
+       id="g845">
+      <path
+         d="M 4.8268615,7.22618 H 6.6017748 V 8.287269 H 4.8268615 Z m 0,-2.89388 h 2.2089953 l 0.048231,1.157552 H 4.8268615 Z m -0.3954969,0 v 6.84885 H 3.1098259 V 4.3323 Z"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9.87777805px;line-height:1;font-family:'Aero Matics Stencil';-inkscape-font-specification:'Aero Matics Stencil';fill:none;stroke:#ff0000;stroke-width:0.1054071;stroke-miterlimit:4;stroke-dasharray:none"
+         id="path826"
+         inkscape:connector-curvature="0" />
+      <path
+         d="M 10.308901,6.632935 10.80086,4.3323 h 0.347266 l 1.519287,6.84885 H 11.345874 L 10.960024,9.73421 H 9.5371981 L 9.7831779,8.67312 H 10.767098 Z M 10.487357,4.3323 8.8812519,11.18115 H 7.5597132 L 9.1272317,4.3323 Z"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9.87777805px;line-height:1;font-family:'Aero Matics Stencil';-inkscape-font-specification:'Aero Matics Stencil';fill:none;stroke:#ff0000;stroke-width:0.1054071;stroke-miterlimit:4;stroke-dasharray:none"
+         id="path828"
+         inkscape:connector-curvature="0" />
+      <path
+         d="M 14.921844,7.22618 H 15.7466 q 0.622184,-0.04823 0.622184,-0.578776 v -0.72347 q 0,-0.434082 -0.56913,-0.434082 h -0.87781 V 4.3323 h 1.022504 q 1.745975,0 1.745975,1.495171 v 0.819933 q 0,0.901926 -0.733117,1.104498 0.829579,0.212217 0.829579,1.114144 v 0.819932 q 0,1.495172 -1.745974,1.495172 h -1.118967 v -1.157552 h 0.87781 q 0.665593,0 0.665593,-0.434082 v -0.72347 q 0,-0.530545 -0.713824,-0.578777 H 14.921844 Z M 14.603517,4.3323 v 6.84885 H 13.281978 V 4.3323 Z"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9.87777805px;line-height:1;font-family:'Aero Matics Stencil';-inkscape-font-specification:'Aero Matics Stencil';fill:none;stroke:#ff0000;stroke-width:0.1054071;stroke-miterlimit:4;stroke-dasharray:none"
+         id="path830"
+         inkscape:connector-curvature="0" />
+      <path
+         d="m 4.7786302,18.69801 h 2.305458 l -0.048231,1.157552 h -2.257227 z m -1.6688043,1.157552 v -6.84885 l 1.3215387,0.04823 v 6.800619 z"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9.87777805px;line-height:1;font-family:'Aero Matics Stencil';-inkscape-font-specification:'Aero Matics Stencil';fill:none;stroke:#ff0000;stroke-width:0.1054071;stroke-miterlimit:4;stroke-dasharray:none"
+         id="path832"
+         inkscape:connector-curvature="0" />
+      <path
+         d="m 10.308901,15.307347 0.491959,-2.300635 h 0.347266 l 1.519287,6.84885 h -1.321539 l -0.38585,-1.44694 H 9.5371981 l 0.2459798,-1.06109 h 0.9839201 z m 0.178456,-2.300635 -1.6061051,6.84885 H 7.5597132 l 1.5675185,-6.84885 z"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9.87777805px;line-height:1;font-family:'Aero Matics Stencil';-inkscape-font-specification:'Aero Matics Stencil';fill:none;stroke:#ff0000;stroke-width:0.1054071;stroke-miterlimit:4;stroke-dasharray:none"
+         id="path834"
+         inkscape:connector-curvature="0" />
+      <path
+         d="M 14.921844,15.900592 H 15.7466 q 0.622184,-0.04823 0.622184,-0.578776 v -0.72347 q 0,-0.434082 -0.56913,-0.434082 h -0.87781 v -1.157552 h 1.022504 q 1.745975,0 1.745975,1.495171 v 0.819933 q 0,0.901926 -0.733117,1.104498 0.829579,0.212218 0.829579,1.114144 v 0.819932 q 0,1.495172 -1.745974,1.495172 H 14.921844 V 18.69801 h 0.87781 q 0.665593,0 0.665593,-0.434082 v -0.72347 q 0,-0.530545 -0.713824,-0.578776 h -0.829579 z m -0.318327,-2.89388 v 6.84885 h -1.321539 v -6.84885 z"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9.87777805px;line-height:1;font-family:'Aero Matics Stencil';-inkscape-font-specification:'Aero Matics Stencil';fill:none;stroke:#ff0000;stroke-width:0.1054071;stroke-miterlimit:4;stroke-dasharray:none"
+         id="path836"
+         inkscape:connector-curvature="0" />
+    </g>
+  </g>
+</svg>
