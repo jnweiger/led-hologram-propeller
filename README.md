@@ -17,7 +17,7 @@ check out the implementation of ImageOps.expand and im.filter()
 
 
 The outermost ring is 0, counting inwards:
-
+```
 Byte Bit     Ring Color
 ----+------------+-------
    0 7		0 Blue
