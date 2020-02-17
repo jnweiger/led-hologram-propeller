@@ -5,5 +5,5 @@ for i in png/*.png; do
   convert $i -blur $blur blurred-$i
 done
 set -x
-ffmpeg -framerate 15 -pattern_type glob -i 'blurred-png/*.png' -c:v libx264 -pix_fmt yuv420p wooden_toy_train-b$blur.mp4
+ffmpeg -framerate 10 -pattern_type glob -i 'blurred-png/*.png' -c:v libx264 -pix_fmt yuv420p wooden_toy_train-10fps-b$blur.mp4
 rm -rf blurred-out

@@ -13,6 +13,9 @@
 #
 # If the upload pauses for more than 18 seconds, the device closes the parital file and plays it. Nice.
 #
+# With the windows tool, the upload of a 9 sec animation takes 83 sec via WLAN.
+# A 200 Frames animation takes 21.4 secnds to play. The speed seems to be a bit less than 10fps.
+#
 # v0.1, 2020-01-21, jw  initial draught. Simple pause, play, and status commands done.
 # v0.2, 2020-01-22, jw  delete command added.
 # v0.3, 2020-01-23, jw  upload command added.

@@ -13,6 +13,6 @@
 # convert -delay 5 -loop 0 out/*/*.png fablabnbg_logo_anim.gif
 # 
 
-ffmpeg -framerate 15 -pattern_type glob -i 'out/*/*.png' -c:v libx264 -pix_fmt yuv420p fablabnbg_logo.mp4
+ffmpeg -framerate 10 -pattern_type glob -i 'out/*/*.png' -c:v libx264 -pix_fmt yuv420p fablabnbg_logo.mp4
 
 # rm -rf out
