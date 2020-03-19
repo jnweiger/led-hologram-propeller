@@ -3,7 +3,7 @@ Driver for a POV display device with 224 LEDs, also called Led fan, 3D-Holograph
 
 This implements the rectangular to polar coordinate transformation required for the display.
 In the inner parts, the destination has higher resolution, in the outer parts, the source has higher resolution.
-That makes it hard to apply standard algorithm.
+That makes it hard to apply a standard algorithm.
 
 Idea: Scale the input picture down (or up) to ca. 2 times (or only 1.5 times) the diameter,
 then sample the source image with a 3x3 convolution kernel using polar coordinates.

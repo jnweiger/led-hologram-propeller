@@ -1,0 +1,40 @@
+The disassembly of a frame shows 2700 pixel rays per revolution.
+Studying the hologram-dither-*.png photos, we see an angle of 0.82 deg between rays of low brightness.
+We always can see 112 pixels from center to outside. This indicates we have a one-dimensional dithering or PWM pattern.
+Assumption: every 6 pixel a PWM restarts. It can take 7 values from all-off to all-on.
+
+It appears, that no frequency maximation is done, as shown below.
+It looks more like a PWM, where one 'on' block is followed by one 'off' block with a total size of 6.
+
+As 7 brightness levels are very few, we could assume that two subsequent 6-bit blocks, alter in one bit, so that
+a total of 13 brightness values can be seen like this:
+
+############.
+##### ######.
+##### ##### .
+####  ##### .
+####  ####  .
+###   ####  .
+###   ###   .
+##    ###   .
+##    ##    .
+#     ##    .
+#     #     .
+      #     .
+            .
+
+To minimize ripples, evey odd radius starts at an offset of 6.
+
+
+---------------------------------------------------------------------------
+
+7 values with 6 positions, maximizing frequency.
+
+######.
+##### .
+### # .
+# # # .
+# #   .
+#     .
+      .
+
