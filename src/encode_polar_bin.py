@@ -1,9 +1,13 @@
 #! /usr/bin/python3
 #
 # encode_polar_bin.py -- fun with polar coordinates.
-# 
+#
 # rgb_bit_columns() implements the pattern described in the README.
 # It seems correct!
+#
+# 2020-03-20, jw v0.4 -- using ordered dither instead of error diffusion to reduce color noise.
+
+version = '0.4'
 
 from PIL import Image, ImageDraw
 import sys, math, random
@@ -77,6 +81,38 @@ def rgb_bit_columns(x, width):
   return (o + zigzag_r[m], o + zigzag_g[m], o + zigzag_b[m])
 
 
+def ordered_dith(x, y, val):
+  """ val is expected in 0...255
+      x is used modulo 2
+      y is used modulo 12
+
+      The dither pattern has 13 different values. We duplicate the first and the last value to
+      stretch the typical video range of [16..240] back into [0..255]
+  """
+  dith = (
+    ( 0, 0, 0, 0, 0, 0,  0, 0, 0, 0, 0, 0 ),
+    ( 0, 0, 0, 0, 0, 0,  0, 0, 0, 0, 0, 0 ),
+    ( 1, 0, 0, 0, 0, 0,  0, 0, 0, 0, 0, 0 ),
+    ( 1, 0, 0, 0, 0, 0,  1, 0, 0, 0, 0, 0 ),
+    ( 1, 1, 0, 0, 0, 0,  1, 0, 0, 0, 0, 0 ),
+    ( 1, 1, 0, 0, 0, 0,  1, 1, 0, 0, 0, 0 ),
+    ( 1, 1, 1, 0, 0, 0,  1, 1, 0, 0, 0, 0 ),
+    ( 1, 1, 1, 0, 0, 0,  1, 1, 1, 0, 0, 0 ),
+    ( 1, 1, 1, 1, 0, 0,  1, 1, 1, 0, 0, 0 ),
+    ( 1, 1, 1, 1, 0, 0,  1, 1, 1, 1, 0, 0 ),
+    ( 1, 1, 1, 1, 1, 0,  1, 1, 1, 1, 0, 0 ),
+    ( 1, 1, 1, 1, 1, 0,  1, 1, 1, 1, 1, 0 ),
+    ( 1, 1, 1, 1, 1, 1,  1, 1, 1, 1, 1, 0 ),
+    ( 1, 1, 1, 1, 1, 1,  1, 1, 1, 1, 1, 1 ),
+    ( 1, 1, 1, 1, 1, 1,  1, 1, 1, 1, 1, 1 )
+  )
+  val = max(0, min(255, int(val)))      # clamp and
+  v14 = int(val / 17.01)                # squeeze into [0..14]
+  d = dith[v14]
+  y += 6 * (int(x) % 2)
+  return d[int(y) % 12]
+
+
 def encode_polar_bin(im, diam=diam_def, c_x=None, c_y=None):
   if c_x == None: c_x = (diam-1.)/2
   if c_y == None: c_y = (diam-1.)/2
@@ -114,16 +150,10 @@ def encode_polar_bin(im, diam=diam_def, c_x=None, c_y=None):
   for column in range(len(po)):
     byte   =       column // 8
     bitval = 1 << (column % 8)
-    err = 0
     for n in range(n_rays):
-      ## Error diffusion to the rescue! It is only a 1-bit DAC, aaaaargh.
-      ## FIXME: diffusing each color channel independantly creates horrible noise.
-      val = po[column][n] + err
-      if val > 127:
+      val = po[column][n]
+      if ordered_dith(column, n, val):
         out[n][byte] |= bitval;
-        err = val - 255
-      else:
-        err = val
   return out
 
 
