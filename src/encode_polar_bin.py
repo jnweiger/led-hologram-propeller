@@ -5,12 +5,18 @@
 # rgb_bit_columns() implements the pattern described in the README.
 # It seems correct!
 #
+# Usage:
+#  env HOLO_REP_IMG=1 $0 image1.jpg [image2.jpg ...]
+#
+# output file: rgb_enc_01.bin
+#
 # 2020-03-20, jw v0.4 -- using ordered dither instead of error diffusion to reduce color noise.
+#
 
 version = '0.4'
 
 from PIL import Image, ImageDraw
-import sys, math, random
+import os, sys, math, random
 
 debug = False    # use small test values
 verbose = False  # print everthing...
@@ -19,6 +25,12 @@ diam_def = 360        # input png image width
 n_rays = 2700         # 113400 / 42
 padsize = 1288        # number of \0 bytes between frames.
 leds = 224            # That is what the device says, (I did not count them :-))
+repeat_img = 1        # 1: full speed 10fps, 30: show each image 3sec
+
+try:
+  repeat_img = max(repeat_img, int(os.environ.get('HOLO_REP_IMG')))
+except:
+  pass
 
 
 def quad_avg(pix_acc, x, y):
@@ -192,13 +204,17 @@ o.write(bytes(header))
 #   data = polar_bin_test(i)
 
 for imgfile in sys.argv[1:]:
-  print("encoding %s ..." % imgfile)
+  if repeat_img > 1:
+    print("encoding %s (%d)..." % (imgfile, repeat_img))
+  else:
+    print("encoding %s ..." % imgfile)
   im = Image.open(imgfile).convert('RGB')       # make sure it is RGB
   data = encode_polar_bin(im, min(im.height, im.width))
 
-  for row in data:
-    o.write(bytes(row))
-  o.write(padding)
+  for rep in range(repeat_img):
+    for row in data:
+      o.write(bytes(row))
+    o.write(padding)
 
 o.close()
 
